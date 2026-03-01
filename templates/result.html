@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CMAD Results</title>
+    <title>CMAD Result</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 <div class="container">
-    <h1>Anomalous Melting Detected</h1>
 
-    <h2>Date: {{ date_str }}</h2>
-    <p>Red pixels show anomalous melting detected by CMAD.</p>
+    <h1>CMAD Anomaly Detection Result</h1>
 
-    <img src="/outputs/{{ image_file }}" width="650" alt="Anomaly Overlay">
+    <p>
+        Target Date: <strong>{{ target_date }}</strong>
+    </p>
+
+    <img src="/outputs/{{ image_file }}" width="500">
 
     <br><br>
-    <button onclick="window.location.href='/'">Run Again</button>
+
+    <a href="/outputs/{{ image_file }}" download>
+        <button class="submit-btn">Download Result Image</button>
+    </a>
+
+    <br><br>
+    <a href="/">Run Another Detection</a>
+
 </div>
 </body>
 </html>

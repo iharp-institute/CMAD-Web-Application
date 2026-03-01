@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CMAD – Antarctic Anomalous Melting Detector</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Convolution Matrix Anomaly Detection (CMAD)</h1>
+    <h2>Antarctic Anomalous Melting Detection Tool</h2>
+
+    <p class="intro">
+        This tool detects <strong>anomalous melting patterns</strong> 
+        across the <strong>entire Antarctic region</strong> using 
+        daily satellite imagery from <strong>NOAA NSIDC v4.0</strong>.
+        <br><br>
+        Instead of manually uploading images, simply enter two dates 
+        in <strong>YYYYMMDD</strong> format. The system will:
+    </p>
+
+    <ul>
+        <li>Automatically download official NOAA Antarctic sea ice images</li>
+        <li>Crop the full Antarctic region</li>
+        <li>Compare Day <strong><i>t</i></strong> with baseline Day <strong><i>t-n</i></strong></li>
+        <li>Detect anomalous melting areas</li>
+        <li>Generate a CMAD anomaly visualization</li>
+    </ul>
+
+    <p class="instructions">
+        Please ensure:
+    </p>
+
+    <ul>
+        <li>Both dates are in <strong>YYYYMMDD</strong> format</li>
+        <li>Baseline date (<i>t-n</i>) is earlier than target date (<i>t</i>)</li>
+        <li>Dates fall within available NOAA satellite records</li>
+    </ul>
+
+    <!-- Backend error display -->
+    {% if error %}
+        <div style="color: red; font-weight: bold; margin: 15px 0;">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form action="/process" method="POST">
+
+        <h3>Baseline Date (Day <i>t-n</i>)</h3>
+        <input 
+            type="text" 
+            name="date1"
+            pattern="\d{8}"
+            maxlength="8"
+            placeholder="YYYYMMDD (e.g. 20150801)"
+            required
+        >
+
+        <h3>Target Date (Day <i>t</i>)</h3>
+        <input 
+            type="text" 
+            name="date2"
+            pattern="\d{8}"
+            maxlength="8"
+            placeholder="YYYYMMDD (e.g. 20150805)"
+            required
+        >
+
+        <br><br>
+        <button type="submit" class="submit-btn">
+            Run CMAD Detection
+        </button>
+
+    </form>
+
+</div>
+</body>
+</html>
