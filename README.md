@@ -73,7 +73,6 @@ CMAD provides an automated framework for detecting abnormal melt behavior betwee
    - Validates date format and logical ordering
    - Downloads NOAA Antarctic daily images
    - Crops the Antarctic region
-   - Computes pixel-wise difference
    - Applies CMAD anomaly detection
    - Highlights abnormal melt regions
 
