@@ -79,3 +79,31 @@ CMAD provides an automated framework for detecting abnormal melt behavior betwee
 3. Output:
    - Melt anomaly visualization
    - Downloadable anomaly image
+  
+## 🚀 Setup & Run
+
+1. Clone the repository:
+```bash
+git clone https://github.com/iharp-institute/CMAD-Web-Application.git
+cd CMAD-Web-Application
+```
+
+2. (Recommended) Create and activate a virtual environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Run the app:
+```bash
+python app.py
+```
+
+5. Open your browser at:
+   http://localhost:5000
+> **Note:** The app uses PyTorch with Apple MPS (Metal) backend by default (`device1 = "mps"` in `cmad_core.py`). If running on a non-Apple-Silicon machine, change this to `"cuda"` (NVIDIA GPU) or `"cpu"`.
