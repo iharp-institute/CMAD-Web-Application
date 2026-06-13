@@ -7,49 +7,76 @@ echo "   STARTING CMAD WEB SERVER + NGROK"
 echo "===================================="
 
 # --------------------------------------------------------
-# 1. AUTO-KILL ANY PROCESS USING PORT 5000
+# 1. KILL ANYTHING ON PORT 5000
 # --------------------------------------------------------
 PID=$(lsof -t -i :$PORT)
-
 if [ ! -z "$PID" ]; then
-    echo "[0/3] Port $PORT is in use by PID $PID — killing..."
+    echo "[0/3] Port $PORT in use by PID $PID — killing..."
     kill -9 $PID
-    echo "    → Successfully freed port $PORT."
+    sleep 1
+    echo "    → Freed port $PORT."
 else
     echo "[0/3] Port $PORT is free."
 fi
 
 # --------------------------------------------------------
-# 2. START FLASK ONLY ONCE
+# 2. INSTALL GUNICORN IF MISSING
 # --------------------------------------------------------
-echo "[1/3] Starting Flask server (single instance)..."
-
-# IMPORTANT: only ONE Flask run
-python app.py &
-sleep 3
-
-if ! lsof -i :$PORT >/dev/null; then
-    echo "ERROR: Flask could not bind to port $PORT."
-    exit 1
+if ! command -v gunicorn &> /dev/null; then
+    echo "[1/3] Installing Gunicorn..."
+    pip install gunicorn --quiet
 fi
 
 # --------------------------------------------------------
-# 3. START NGROK
+# 3. START GUNICORN
+#    -k gthread   → thread-based workers (fixes macOS fork crash)
+#    --workers 1  → single process (no forking at all)
+#    --threads 4  → 4 concurrent requests within that process
+# --------------------------------------------------------
+echo "[1/3] Starting Gunicorn (1 process, 4 threads)..."
+
+gunicorn \
+    --worker-class gthread \
+    --workers 1 \
+    --threads 4 \
+    --bind 0.0.0.0:$PORT \
+    --timeout 180 \
+    --log-level info \
+    app:app &
+
+GUNICORN_PID=$!
+sleep 5
+
+if ! lsof -i :$PORT >/dev/null 2>&1; then
+    echo "ERROR: Gunicorn failed to start. Check errors above."
+    exit 1
+fi
+echo "    → Gunicorn running (PID $GUNICORN_PID)."
+
+# --------------------------------------------------------
+# 4. START NGROK
 # --------------------------------------------------------
 echo "[2/3] Starting ngrok tunnel..."
 ngrok http $PORT > /dev/null 2>&1 &
-sleep 3
+sleep 4
 
 # --------------------------------------------------------
-# 4. GET PUBLIC URL
+# 5. GET PUBLIC URL
 # --------------------------------------------------------
 echo "[3/3] Fetching public URL..."
-NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | grep -o '"public_url":"[^"]*' | sed 's/"public_url":"//')
+NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | grep -o '"public_url":"[^"]*' | sed 's/"public_url":\"//')
+
+if [ -z "$NGROK_URL" ]; then
+    echo "WARNING: Could not fetch ngrok URL. Check http://localhost:4040"
+else
+    echo ""
+    echo "========================================"
+    echo "   CMAD WEBSITE IS LIVE!"
+    echo "   Public URL: $NGROK_URL"
+    echo "   Mode:       1 process / 4 threads"
+    echo "========================================"
+fi
 
 echo ""
-echo "========================================"
-echo "   CMAD WEBSITE IS LIVE!"
-echo "   Public URL: $NGROK_URL"
-echo "========================================"
-echo ""
 echo "Press CTRL+C to stop everything."
+wait
