@@ -1,4 +1,4 @@
-# CMAD-vis
+# CMAD-Vis
 **Convolution Matrix Anomaly Detection (CMAD)**
 
 An automated web-based research tool for detecting anomalous Antarctic sea ice melt using official NOAA NSIDC daily satellite imagery.
