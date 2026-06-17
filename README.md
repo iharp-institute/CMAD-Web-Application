@@ -80,6 +80,18 @@ CMAD provides an automated framework for detecting abnormal melt behavior betwee
    - Melt anomaly visualization
    - Downloadable anomaly image
   
+## ✅ Prerequisites
+
+Before running CMAD-Vis, make sure you have the following installed:
+
+- **Python 3.9+** — [Download Python](https://www.python.org/downloads/)
+  Verify with: `python3 --version`
+- **pip** (usually included with Python) — Verify with: `pip --version`
+- **Git** — [Download Git](https://git-scm.com/downloads)
+  Verify with: `git --version`
+
+If any of these are missing, install them first before proceeding to Setup & Run below.
+  
 ## 🚀 Setup & Run
 
 1. Clone the repository:
