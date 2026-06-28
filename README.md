@@ -1,6 +1,6 @@
 # CMAD-Vis: An Interactive Tool for Detecting Clusters of Anomalous Antarctic Sea Ice Melting Events
 
----
+
 
 ## 🌎 Overview
 
